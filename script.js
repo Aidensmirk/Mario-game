@@ -122,6 +122,7 @@ class Obstacle {
         this.position = { x, y };
         this.width = Math.random() > 0.5 ? 80 : 50;
         this.height = Math.random() > 0.5 ? 40 : 30;
+        this.velocity = { x: -2, y: 0 }; // Move left at a speed of 2
 
         this.image = new Image();
         this.image.src = imageSrc;
@@ -140,7 +141,19 @@ class Obstacle {
             c.fillRect(this.position.x, this.position.y, this.width, this.height);
         }
     }
+
+    update() {
+        this.position.x += this.velocity.x; // Update position based on velocity
+
+        // Reset obstacle position when it moves off-screen
+        if (this.position.x + this.width < 0) {
+            this.position.x = canvas.width + Math.random() * 500; // Reset to a random position
+        }
+
+        this.draw();
+    }
 }
+
 class Collectible {
     constructor(x, y, imageSrc) {
         this.position = { x, y};
@@ -177,19 +190,24 @@ let scrollOffset = 0;
 // Generate infinite platforms and obstacles
 function generateLevel() {
     platforms = [];
-    obstacles = [];   
+    obstacles = [];
     Collectibles = [];
 
-    for (let i = -5; i < 10; i++) {  // Generate enough platforms
-        let x = i * canvas.width;  // Make sure each platform connects
+    for (let i = -5; i < 10; i++) { // Generate enough platforms
+        let x = i * canvas.width; // Make sure each platform connects
         platforms.push(new Platform(x, 490, './plform.png'));
-        if (i % 2 === 0) {
-            let obstacleImage = './Screenshot 2025-03-13 112821.png';
-            obstacles.push(new Obstacle(x + canvas.width / 2, 450, obstacleImage)); // Fixed position
-        }
+
+        // Add two obstacles on each platform
+        let obstacleImage = './Screenshot 2025-03-13 112821.png';
+        obstacles.push(new Obstacle(x + 400, 450, obstacleImage)); // First obstacle
+        obstacles.push(new Obstacle(x + 400, 450, obstacleImage)); // First obstacle (increased distance)
+        obstacles.push(new Obstacle(x + 800, 450, obstacleImage)); // Second obstacle
+        obstacles.push(new Obstacle(x + 800, 450, obstacleImage)); // Second obstacle
+
+        // Add a collectible on every second platform
         if (i % 2 === 0) {
             let collectibleImage = './coin.png';
-            Collectibles.push(new Collectible(x + 400, 420, collectibleImage)); // Place above ground
+            Collectibles.push(new Collectible(x + 600, 420, collectibleImage)); // Place above ground
         }
     }
 }
@@ -293,7 +311,7 @@ function animate() {
     drawBackground();
 
     platforms.forEach(platform => platform.update()); // Update platforms
-    obstacles.forEach(obstacle => obstacle.draw()); // Obstacles remain fixed
+    obstacles.forEach(obstacle => obstacle.update()); // Update obstacles
     Collectibles.forEach(collectible => collectible.draw()); // Coins remain fixed
     player.update();
 
