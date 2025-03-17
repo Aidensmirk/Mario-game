@@ -143,7 +143,8 @@ let platforms = [], obstacles = [], collectibles = [];
 let scrollOffset = 0, score = 0, gameOver = false;
 const baseScrollSpeed = 2.5;
 let scrollSpeed = baseScrollSpeed;
-let lives = 3; // Number of lives
+let lives = 3; 
+var isPaused = false;// Number of lives
 
 // --- Level Generation ---
 function generateLevel() {
@@ -237,6 +238,41 @@ restartButton.onclick = () => {
 };
 gameOverOverlay.appendChild(restartButton);
 document.body.appendChild(gameOverOverlay);
+// --- Win Overlay ---
+const winOverlay = document.createElement('div');
+Object.assign(winOverlay.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    width: '100%',
+    height: '100%',
+    background: 'rgba(0, 255, 0, 0.7)',
+    display: 'none',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: 'white',
+    fontSize: '32px',
+    fontWeight: 'bold'
+});
+winOverlay.innerHTML = `<div>You Win!</div>`;
+const winRestartButton = document.createElement('button');
+winRestartButton.innerText = 'Restart';
+Object.assign(winRestartButton.style, {
+    marginTop: '20px',
+    padding: '10px 20px',
+    fontSize: '18px',
+    background: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer'
+});
+winRestartButton.onclick = () => {
+    winOverlay.style.display = 'none';
+    restartGame();
+};
+winOverlay.appendChild(winRestartButton);
+document.body.appendChild(winOverlay);
 // --- Restart Game ---
 function restartGame() {
     gameOver = false;
@@ -255,10 +291,40 @@ const keys = {
 };
 function animate() {
     if (gameOver) return;
+
+    // Win condition
+    if (score >= 80) {
+        winOverlay.style.display = 'flex';
+        return; // Stop the game loop
+    }
+
     requestAnimationFrame(animate);
     drawBackground();
     platforms.forEach(p => p.update());
-    obstacles.forEach(o => o.update());
+    obstacles.forEach((ob, i) => {
+        // Check for collision with the player
+        if (player.position.x < ob.position.x + ob.width &&
+            player.position.x + player.width > ob.position.x &&
+            player.position.y < ob.position.y + ob.height &&
+            player.position.y + player.height > ob.position.y) {
+            lives -= 1; // Decrease lives
+            livesDisplay.innerText = `Lives: ${lives}`;
+            player.reset(); // Reset player position
+            if (lives <= 0) {
+                gameOver = true;
+                gameOverOverlay.style.display = 'flex';
+            }
+        }
+
+        // Check if the obstacle has moved off-screen
+        if (ob.position.x + ob.width < 0) {
+            obstacles.splice(i, 1); // Remove the obstacle from the array
+            score += 5; // Add 5 points for skipping the obstacle
+            scoreDisplay.innerText = `Score: ${score}`; // Update the score display
+        }
+
+        ob.update(); // Update the obstacle's position
+    });
     collectibles.forEach(c => c.draw());
     player.update();
 
@@ -292,22 +358,6 @@ function animate() {
             player.position.x + player.width >= platform.position.x &&
             player.position.x <= platform.position.x + platform.width) {
             player.velocity.y = 0;
-        }
-    });
-
-    // Obstacle Collision
-    obstacles.forEach(ob => {
-        if (player.position.x < ob.position.x + ob.width &&
-            player.position.x + player.width > ob.position.x &&
-            player.position.y < ob.position.y + ob.height &&
-            player.position.y + player.height > ob.position.y) {
-            lives -= 1; // Decrease lives
-            livesDisplay.innerText = `Lives: ${lives}`;
-            player.reset(); // Reset player position
-            if (lives <= 0) {
-                gameOver = true;
-                gameOverOverlay.style.display = 'flex';
-            }
         }
     });
 
@@ -359,3 +409,26 @@ addEventListener('keyup', ({ keyCode }) => {
             break;
     }
 });
+document.addEventListener('keyup', function(e) 
+{
+    if(e.which ==32)
+    {
+        if(isPaused) resumeGame();
+        else pauseGame();
+    }
+});
+function pauseGame()
+{
+    clearInterval(interval);
+    isPaused = true;
+    c.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    c.fillRect(0, 0, canvas.width, canvas.height);
+    c.fillStyle = 'white';
+    c.font = '48px Arial';
+    c.fillText('Game Paused', canvas.width / 2 - 150, canvas.height / 2);
+}
+function resumeGame()
+{
+    isPaused = false;
+    animate();
+}
