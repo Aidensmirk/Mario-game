@@ -3,43 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
+    <title>Mario World</title>
     <style>
-         body {
+        body {
             margin: 0;
             padding: 0;
-            background-color: #87ceeb;
+            background: url('DALL·E 2025-03-17 11.24.39 - A vibrant Super Mario-inspired background featuring a bright blue sky, fluffy white clouds, rolling green hills, and classic Mario elements like quest.webp') no-repeat center center/cover;
+            text-align: center;
+            font-family: 'Press Start 2P', cursive;
+        }
+        .container {
+            height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         }
-
-        canvas {
-            border: 2px solid black;
-            background-color: #305a6b;
+        h1 {
+            font-size: 3rem;
+        }
+        .start-btn {
+            background-color: red;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        .start-btn:hover {
+            background-color: darkred;
         }
     </style>
 </head>
 <body>
-    <canvas></canvas>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <script src="script.js" type="module"></script>
+    <div class="container">
+        <h1>Welcome to Mario World</h1>
+        <a href="home.html"><button class="start-btn">Start Game</button></a>
+    </div>
 </body>
 </html>
