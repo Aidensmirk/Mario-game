@@ -9,11 +9,11 @@ class Player {
     constructor() {
         this.position = { x: 100, y: 400 };
         this.velocity = { x: 0, y: 0 };
-        this.width = 32; // Adjusted to fit sprite better
+        this.width = 32; 
         this.height = 36; 
         this.speed = 12
         this.frameIndex = 0;
-        this.frameCount = 3; // Number of walking frames
+        this.frameCount = 3; 
         this.frameTimer = 0;
         this.frameInterval = 2; 
 
@@ -197,17 +197,19 @@ function generateLevel() {
         let x = i * canvas.width; // Make sure each platform connects
         platforms.push(new Platform(x, 490, './plform.png'));
 
-        // Add two obstacles on each platform
+        // Add obstacles with fixed spacing
         let obstacleImage = './Screenshot 2025-03-13 112821.png';
-        obstacles.push(new Obstacle(x + 400, 450, obstacleImage)); // First obstacle
-        obstacles.push(new Obstacle(x + 400, 450, obstacleImage)); // First obstacle (increased distance)
-        obstacles.push(new Obstacle(x + 800, 450, obstacleImage)); // Second obstacle
-        obstacles.push(new Obstacle(x + 800, 450, obstacleImage)); // Second obstacle
+        let obstacle1X = x + 200; // First obstacle at a fixed offset
+        let obstacle2X = x + 600; // Second obstacle at a fixed offset
+
+        obstacles.push(new Obstacle(obstacle1X, 450, obstacleImage));
+        obstacles.push(new Obstacle(obstacle2X, 450, obstacleImage));
 
         // Add a collectible on every second platform
         if (i % 2 === 0) {
             let collectibleImage = './coin.png';
-            Collectibles.push(new Collectible(x + 600, 420, collectibleImage)); // Place above ground
+            let collectibleX = x + Math.random() * (canvas.width - 200) + 100; // Random position above ground
+            Collectibles.push(new Collectible(collectibleX, 420, collectibleImage));
         }
     }
 }
@@ -254,7 +256,7 @@ gameOverOverlay.style.flexDirection = 'column';
 gameOverOverlay.style.alignItems = 'center';
 gameOverOverlay.style.justifyContent = 'center';
 gameOverOverlay.style.color = 'red';
-gameOverOverlay.style.fontSize = '32px';
+gameOverOverlay.style.fontSize = '35px';
 gameOverOverlay.style.fontWeight = 'bold';
 gameOverOverlay.style.display = 'none'; // Initially hidden
 
