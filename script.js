@@ -144,6 +144,7 @@ let scrollOffset = 0, score = 0, gameOver = false;
 const baseScrollSpeed = 2.5;
 let scrollSpeed = baseScrollSpeed;
 let lives = 3; // Number of lives
+
 // --- Level Generation ---
 function generateLevel() {
     platforms = [], 
@@ -260,6 +261,7 @@ function animate() {
     obstacles.forEach(o => o.update());
     collectibles.forEach(c => c.draw());
     player.update();
+
     // Movement
     if (!keys.left.pressed) player.velocity.x = 0.4;
     if (keys.left.pressed) player.velocity.x = -2;
@@ -268,7 +270,21 @@ function animate() {
         platforms.forEach(p => p.position.x -= scrollSpeed);
         obstacles.forEach(o => o.position.x -= scrollSpeed);
         collectibles.forEach(c => c.position.x -= scrollSpeed);
+
+        // Generate new obstacles and collectibles dynamically
+        if (scrollOffset > canvas.width) {
+            scrollOffset = 0; // Reset scroll offset
+            const lastPlatformX = platforms[platforms.length - 1].position.x;
+            platforms.push(new Platform(lastPlatformX + canvas.width, 490, './plform.png'));
+
+            const lastObstacleX = obstacles.length > 0 ? obstacles[obstacles.length - 1].position.x : 400;
+            obstacles.push(new Obstacle(lastObstacleX + 700 + Math.random() * 300, 450, './Screenshot 2025-03-13 112821.png'));
+
+            const lastCollectibleX = collectibles.length > 0 ? collectibles[collectibles.length - 1].position.x : 10;
+            collectibles.push(new Collectible(lastCollectibleX + 600 + Math.random() * 200, 420, './coin.png'));
+        }
     }
+
     // Platform Collision
     platforms.forEach(platform => {
         if (player.position.y + player.height <= platform.position.y &&
@@ -278,6 +294,7 @@ function animate() {
             player.velocity.y = 0;
         }
     });
+
     // Obstacle Collision
     obstacles.forEach(ob => {
         if (player.position.x < ob.position.x + ob.width &&
@@ -293,6 +310,7 @@ function animate() {
             }
         }
     });
+
     // Collectibles Collision
     collectibles.forEach((item, i) => {
         if (player.position.x < item.position.x + item.width &&
@@ -303,6 +321,7 @@ function animate() {
             collectibles.splice(i, 1);
         }
     });
+
     scoreDisplay.innerText = `Score: ${score}`;
 }
 
