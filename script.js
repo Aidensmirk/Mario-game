@@ -1,6 +1,3 @@
-
-
-
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
 canvas.width = 1024;
@@ -146,6 +143,7 @@ let platforms = [], obstacles = [], collectibles = [];
 let scrollOffset = 0, score = 0, gameOver = false;
 const baseScrollSpeed = 2.5;
 let scrollSpeed = baseScrollSpeed;
+let lives = 3; // Number of lives
 // --- Level Generation ---
 function generateLevel() {
     platforms = [], 
@@ -193,6 +191,16 @@ scoreDisplay.style.color = 'white';
 scoreDisplay.style.fontSize = '24px';
 scoreDisplay.style.fontWeight = 'bold';
 document.body.appendChild(scoreDisplay);
+// --- Lives Display ---
+const livesDisplay = document.createElement('div');
+livesDisplay.style.position = 'fixed';
+livesDisplay.style.top = '40px';
+livesDisplay.style.left = '10px';
+livesDisplay.style.color = 'white';
+livesDisplay.style.fontSize = '24px';
+livesDisplay.style.fontWeight = 'bold';
+livesDisplay.innerText = `Lives: ${lives}`;
+document.body.appendChild(livesDisplay);
 // --- Game Over Overlay ---
 const gameOverOverlay = document.createElement('div');
 Object.assign(gameOverOverlay.style, {
@@ -232,6 +240,8 @@ document.body.appendChild(gameOverOverlay);
 function restartGame() {
     gameOver = false;
     score = 0;
+    lives = 3; // Reset lives
+    livesDisplay.innerText = `Lives: ${lives}`;
     scrollOffset = 0;
     player.reset();
     generateLevel();
@@ -274,8 +284,13 @@ function animate() {
             player.position.x + player.width > ob.position.x &&
             player.position.y < ob.position.y + ob.height &&
             player.position.y + player.height > ob.position.y) {
-            gameOver = true;
-            gameOverOverlay.style.display = 'flex';
+            lives -= 1; // Decrease lives
+            livesDisplay.innerText = `Lives: ${lives}`;
+            player.reset(); // Reset player position
+            if (lives <= 0) {
+                gameOver = true;
+                gameOverOverlay.style.display = 'flex';
+            }
         }
     });
     // Collectibles Collision
@@ -290,6 +305,7 @@ function animate() {
     });
     scoreDisplay.innerText = `Score: ${score}`;
 }
+
 addEventListener('keydown', ({ keyCode }) => {
     switch (keyCode) {
         case 65:
