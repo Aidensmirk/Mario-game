@@ -277,7 +277,7 @@ document.body.appendChild(winOverlay);
 function restartGame() {
     gameOver = false;
     score = 0;
-    lives = 3; // Reset lives
+    lives = 3; 
     livesDisplay.innerText = `Lives: ${lives}`;
     scrollOffset = 0;
     player.reset();
@@ -295,7 +295,7 @@ function animate() {
     // Win condition
     if (score >= 80) {
         winOverlay.style.display = 'flex';
-        return; // Stop the game loop
+        return; 
     }
 
     requestAnimationFrame(animate);
@@ -307,9 +307,9 @@ function animate() {
             player.position.x + player.width > ob.position.x &&
             player.position.y < ob.position.y + ob.height &&
             player.position.y + player.height > ob.position.y) {
-            lives -= 1; // Decrease lives
+            lives -= 1;
             livesDisplay.innerText = `Lives: ${lives}`;
-            player.reset(); // Reset player position
+            player.reset(); 
             if (lives <= 0) {
                 gameOver = true;
                 gameOverOverlay.style.display = 'flex';
@@ -318,12 +318,12 @@ function animate() {
 
         // Check if the obstacle has moved off-screen
         if (ob.position.x + ob.width < 0) {
-            obstacles.splice(i, 1); // Remove the obstacle from the array
-            score += 5; // Add 5 points for skipping the obstacle
-            scoreDisplay.innerText = `Score: ${score}`; // Update the score display
+            obstacles.splice(i, 1); 
+            score += 5; 
+            scoreDisplay.innerText = `Score: ${score}`;
         }
 
-        ob.update(); // Update the obstacle's position
+        ob.update(); 
     });
     collectibles.forEach(c => c.draw());
     player.update();
@@ -339,7 +339,7 @@ function animate() {
 
         // Generate new obstacles and collectibles dynamically
         if (scrollOffset > canvas.width) {
-            scrollOffset = 0; // Reset scroll offset
+            scrollOffset = 0; 
             const lastPlatformX = platforms[platforms.length - 1].position.x;
             platforms.push(new Platform(lastPlatformX + canvas.width, 490, './plform.png'));
 
