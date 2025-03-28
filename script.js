@@ -277,7 +277,7 @@ document.body.appendChild(winOverlay);
 function restartGame() {
     gameOver = false;
     score = 0;
-    lives = 3; 
+    lives = 3;
     livesDisplay.innerText = `Lives: ${lives}`;
     scrollOffset = 0;
     player.reset();
@@ -417,18 +417,18 @@ document.addEventListener('keyup', function(e)
         else pauseGame();
     }
 });
-function pauseGame()
-{
-    clearInterval(interval);
-    isPaused = true;
-    c.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    c.fillRect(0, 0, canvas.width, canvas.height);
-    c.fillStyle = 'white';
-    c.font = '48px Arial';
-    c.fillText('Game Paused', canvas.width / 2 - 150, canvas.height / 2);
-}
-function resumeGame()
-{
-    isPaused = false;
-    animate();
-}
+
+// let isPaused = false;
+
+// function gameLoop() {
+//     if (!isPaused) {}
+//     requestAnimationFrame(gameLoop);
+// }
+// function togglePause() {
+//     isPaused = !isPaused;
+//     if (!isPaused) {
+//         console.log('Game resumed');
+//         nextTick();
+//     }
+// }
+// document.querySelector('#pauseBtn').addEventListener('click', togglePause);
