@@ -432,3 +432,28 @@ document.addEventListener('keyup', function(e)
 //     }
 // }
 // document.querySelector('#pauseBtn').addEventListener('click', togglePause);
+
+function togglePause() 
+{
+    if (!paused){
+        paused = true;    
+    }
+    else if (paused){
+        paused = false;
+    }
+
+}
+
+window.addEventListener('keydown', function(e) {
+    var key = e.keyCode;
+    if (key == 80) 
+    {
+        togglePause();
+    }
+});
+ 
+draw();
+if(!paused)
+{
+    update();
+}
