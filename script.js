@@ -144,7 +144,11 @@ let scrollOffset = 0, score = 0, gameOver = false;
 const baseScrollSpeed = 2.5;
 let scrollSpeed = baseScrollSpeed;
 let lives = 3; 
-var isPaused = false;// Number of lives
+let paused = false; // Ensure the paused variable is defined globally
+const keys = {
+    right: { pressed: false },
+    left: { pressed: false }
+};
 
 // --- Level Generation ---
 function generateLevel() {
@@ -285,17 +289,11 @@ function restartGame() {
     animate();
 }
 // --- Animate Loop ---
-const keys = {
-    right: { pressed: false },
-    left: { pressed: false }
-};
 function animate() {
     if (gameOver) return;
 
-    // Win condition
-    if (score >= 80) {
-        winOverlay.style.display = 'flex';
-        return; 
+    if (paused) {
+        return;
     }
 
     requestAnimationFrame(animate);
@@ -409,51 +407,14 @@ addEventListener('keyup', ({ keyCode }) => {
             break;
     }
 });
-document.addEventListener('keyup', function(e) 
-{
-    if(e.which ==32)
-    {
-        if(isPaused) resumeGame();
-        else pauseGame();
-    }
-});
 
-// let isPaused = false;
-
-// function gameLoop() {
-//     if (!isPaused) {}
-//     requestAnimationFrame(gameLoop);
-// }
-// function togglePause() {
-//     isPaused = !isPaused;
-//     if (!isPaused) {
-//         console.log('Game resumed');
-//         nextTick();
-//     }
-// }
-// document.querySelector('#pauseBtn').addEventListener('click', togglePause);
-
-function togglePause() 
-{
-    if (!paused){
-        paused = true;    
-    }
-    else if (paused){
-        paused = false;
-    }
-
+function togglePause() {
+    paused = !paused; 
+    console.log(paused ? 'Game paused' : 'Game resumed');
 }
 
 window.addEventListener('keydown', function(e) {
-    var key = e.keyCode;
-    if (key == 80) 
-    {
+    if (e.keyCode === 80) { 
         togglePause();
     }
 });
- 
-draw();
-if(!paused)
-{
-    update();
-}
