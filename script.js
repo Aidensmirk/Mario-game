@@ -411,6 +411,9 @@ addEventListener('keyup', ({ keyCode }) => {
 function togglePause() {
     paused = !paused; 
     console.log(paused ? 'Game paused' : 'Game resumed');
+    if (!paused) {
+        animate(); 
+    }
 }
 
 window.addEventListener('keydown', function(e) {
